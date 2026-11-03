@@ -1,0 +1,221 @@
+DIAGRAMAS PARA ENTERPRISE ARCHITECT
+Sistema Web - Carrera de Administración de Empresas (FCEE - UAGRM)
+Tecnología Web INF513-SA - Grupo 17-B
+=====================================================================
+
+Contenido de esta carpeta
+-------------------------
+  modelo_carrera_administracion.xmi  -> Modelo completo para IMPORTAR en EA (opción A).
+  crear_modelo_EA.js                 -> Script JScript que crea el mismo modelo (opción B, plan de respaldo).
+  LEEME.txt                          -> Este archivo.
+
+El modelo contiene 46 diagramas ya dibujados, organizados en estos paquetes:
+  Sistema Web - Carrera de Administración de Empresas
+    Actores                      (los 4 actores)
+    Casos de Usos                (los 8 casos de uso aprobados)
+    Diagramas de Casos de Uso    (diagramas 1 a 10)
+    Paquetes                     (los 4 paquetes de análisis)
+    Diagramas de Paquetes        (diagramas 11 a 20)
+    Análisis                     (diagramas 21 a 28, un subpaquete por CU)
+    Diseño - Clases              (diagramas 29 a 36, clases reales de Laravel y Vue)
+    Base de Datos                (diagrama 37, tablas de MySQL)
+    Secuencia                    (diagramas 38 a 45, un subpaquete por CU)
+    Arquitectura                 (diagrama 46)
+
+Igual que en el documento de ejemplo, los actores y casos de uso viven en sus
+propios paquetes, por eso en los diagramas aparece la leyenda "(from Actores)",
+"(from Casos de Usos)" o "(from Paquetes)".
+
+
+OPCIÓN A: IMPORTAR EL XMI (recomendada)
+---------------------------------------
+1. Abra Enterprise Architect y cree un proyecto nuevo
+   (Start > New Project / "Nuevo proyecto"), por ejemplo carrera_administracion.qea.
+2. En el Explorador del proyecto (Project Browser) seleccione el nodo raíz del
+   modelo o cree una vista/paquete vacío (clic derecho > Add View / Add Package)
+   y déjelo seleccionado.
+3. Menú Publish (Publicar) > grupo "Model Exchange" > Import > "Import XMI..."
+   (atajo Ctrl+Alt+I). En versiones antiguas: Project > Import/Export >
+   "Import Package from XMI".
+4. En "Filename" elija modelo_carrera_administracion.xmi.
+   Deje marcada la opción "Import Diagrams" y DESMARCADA "Strip GUIDs".
+5. Pulse "Import" y espere a que termine (puede tardar uno o dos minutos).
+6. Abra cada diagrama desde el Explorador del proyecto (doble clic).
+
+
+OPCIÓN B: EJECUTAR EL SCRIPT (si algún diagrama no se dibuja bien con el XMI)
+-----------------------------------------------------------------------------
+Úsela en un proyecto NUEVO (no en el mismo donde importó el XMI, para no duplicar).
+1. Cree un proyecto nuevo y en el Explorador del proyecto cree un paquete vacío
+   (por ejemplo "Modelo") y déjelo SELECCIONADO.
+2. Abra la ventana de Scripting: menú Specialize (Especializar) > Tools > Scripting
+   (en versiones antiguas: Tools > Scripting).
+3. Cree un grupo de scripts de tipo "Normal" y dentro un script nuevo de tipo
+   JScript (botón "New JScript").
+4. Abra crear_modelo_EA.js con el Bloc de notas, copie TODO el contenido,
+   péguelo en el editor del script y guarde (Ctrl+S).
+5. Vuelva a seleccionar el paquete vacío en el Explorador y ejecute el script
+   (botón "Run Script"). Al terminar aparece el mensaje "Modelo creado".
+   El avance se ve en la ventana "System Output > Script".
+
+
+EXPORTAR CADA DIAGRAMA A PNG
+----------------------------
+1. Abra el diagrama.
+2. Clic derecho en una zona vacía del diagrama > "Save as Image..."
+   (o la opción "Copy Image to Clipboard" para pegarla directo en Word).
+3. Elija formato PNG y guarde con el número del diagrama (ej. 02_CU1.png).
+4. Insértela en el documento en la figura indicada en la lista de abajo.
+
+Si quiere exportar todos de una vez: clic derecho sobre el paquete raíz >
+"Documentation" / "Publish" > "Save Diagrams as Images" (el nombre exacto cambia
+según la versión de EA).
+
+
+AJUSTES RÁPIDOS SI ALGO NO SE VE IGUAL AL EJEMPLO
+-------------------------------------------------
+- Boundary / Control / Entity se ven como rectángulos: seleccione los elementos,
+  clic derecho > Appearance (o Advanced) > desmarque "Use Rectangle Notation".
+- En "Vista de Paquete ..." el paquete tapa a los actores: clic derecho sobre el
+  paquete > Z-Order > "Send to Back".
+- Mensajes de secuencia muy juntos o encimados: arrástrelos verticalmente o use
+  Layout > "Auto-Layout" del diagrama de secuencia.
+- Líneas cruzadas en diagramas de clases: Layout > Diagram > "Layout Diagram"
+  (o mueva las cajas a gusto). Todas las relaciones ya están creadas.
+- Si no desea la leyenda "(from ...)": Diagram > Properties > Elements >
+  desmarque "Show Namespace" / "Show element's package".
+
+
+LISTA DE DIAGRAMAS Y TÍTULOS DE FIGURA SUGERIDOS
+-------------------------------------------------
+(Siguen el mismo orden que la documentación del proyecto.)
+
+  Capítulo V - Captura de requisitos: identificación de actores
+   1. Diagrama: "Identificación de Actores"
+      Título de figura sugerido: Figura X Identificación de Actores
+
+  Detalle de casos de uso (una figura antes de cada tabla de CU)
+   2. Diagrama: "CU1 - Gestión de Usuarios"
+      Título de figura sugerido: Figura X CU-01. Gestión de Usuarios
+   3. Diagrama: "CU2 - Gestión de Portal Web y Bitácora de Auditoría"
+      Título de figura sugerido: Figura X CU-02. Gestión de Portal Web y Bitácora de Auditoría
+   4. Diagrama: "CU3 - Gestión de Información Académica, Malla Curricular y Plantel Docente"
+      Título de figura sugerido: Figura X CU-03. Gestión de Información Académica, Malla Curricular y Plantel Docente
+   5. Diagrama: "CU4 - Gestión de Investigaciones, Revista INNOVAR y Repositorio Documental"
+      Título de figura sugerido: Figura X CU-04. Gestión de Investigaciones, Revista INNOVAR y Repositorio Documental
+   6. Diagrama: "CU5 - Gestión de Vinculación, Empresa Junior INNOVA y Graduados"
+      Título de figura sugerido: Figura X CU-05. Gestión de Vinculación, Empresa Junior INNOVA y Graduados
+   7. Diagrama: "CU6 - Gestión de Noticias, Eventos y Galería Multimedia"
+      Título de figura sugerido: Figura X CU-06. Gestión de Noticias, Eventos y Galería Multimedia
+   8. Diagrama: "CU7 - Gestión de Consultas y Búsqueda Interna Global"
+      Título de figura sugerido: Figura X CU-07. Gestión de Consultas y Búsqueda Interna Global
+   9. Diagrama: "CU8 - Reportes y Estadísticas"
+      Título de figura sugerido: Figura X CU-08. Reportes y Estadísticas
+
+  Diagrama general de casos de uso
+  10. Diagrama: "Diagrama General de Casos de Uso"
+      Título de figura sugerido: Figura X Diagrama General de Casos de Uso
+
+  Análisis: identificar y relacionar paquetes
+  11. Diagrama: "Identificación de Paquetes"
+      Título de figura sugerido: Figura X Identificación de Paquetes
+  12. Diagrama: "Relación de Paquetes"
+      Título de figura sugerido: Figura X Relación de Paquetes
+
+  Relacionar paquetes y casos de uso
+  13. Diagrama: "Paquete Seguridad y Portal"
+      Título de figura sugerido: Figura X Paquete Seguridad y Portal
+  14. Diagrama: "Paquete Gestión Académica e Investigación"
+      Título de figura sugerido: Figura X Paquete Gestión Académica e Investigación
+  15. Diagrama: "Paquete Vinculación y Difusión"
+      Título de figura sugerido: Figura X Paquete Vinculación y Difusión
+  16. Diagrama: "Paquete Atención y Análisis"
+      Título de figura sugerido: Figura X Paquete Atención y Análisis
+
+  Vista de paquetes
+  17. Diagrama: "Vista de Paquete Seguridad y Portal"
+      Título de figura sugerido: Figura X Vista de Paquete Seguridad y Portal
+  18. Diagrama: "Vista de Paquete Gestión Académica e Investigación"
+      Título de figura sugerido: Figura X Vista de Paquete Gestión Académica e Investigación
+  19. Diagrama: "Vista de Paquete Vinculación y Difusión"
+      Título de figura sugerido: Figura X Vista de Paquete Vinculación y Difusión
+  20. Diagrama: "Vista de Paquete Atención y Análisis"
+      Título de figura sugerido: Figura X Vista de Paquete Atención y Análisis
+
+  Análisis de casos de uso
+  21. Diagrama: "Análisis del CU1 - Gestión de Usuarios"
+      Título de figura sugerido: Figura X Análisis del CU1: Gestión de Usuarios
+  22. Diagrama: "Análisis del CU2 - Gestión de Portal Web y Bitácora de Auditoría"
+      Título de figura sugerido: Figura X Análisis del CU2: Gestión de Portal Web y Bitácora de Auditoría
+  23. Diagrama: "Análisis del CU3 - Gestión de Información Académica, Malla Curricular y Plantel Docente"
+      Título de figura sugerido: Figura X Análisis del CU3: Gestión de Información Académica, Malla Curricular y Plantel Docente
+  24. Diagrama: "Análisis del CU4 - Gestión de Investigaciones, Revista INNOVAR y Repositorio Documental"
+      Título de figura sugerido: Figura X Análisis del CU4: Gestión de Investigaciones, Revista INNOVAR y Repositorio Documental
+  25. Diagrama: "Análisis del CU5 - Gestión de Vinculación, Empresa Junior INNOVA y Graduados"
+      Título de figura sugerido: Figura X Análisis del CU5: Gestión de Vinculación, Empresa Junior INNOVA y Graduados
+  26. Diagrama: "Análisis del CU6 - Gestión de Noticias, Eventos y Galería Multimedia"
+      Título de figura sugerido: Figura X Análisis del CU6: Gestión de Noticias, Eventos y Galería Multimedia
+  27. Diagrama: "Análisis del CU7 - Gestión de Consultas y Búsqueda Interna Global"
+      Título de figura sugerido: Figura X Análisis del CU7: Gestión de Consultas y Búsqueda Interna Global
+  28. Diagrama: "Análisis del CU8 - Reportes y Estadísticas"
+      Título de figura sugerido: Figura X Análisis del CU8: Reportes y Estadísticas
+
+  Diseño de datos: diagramas de clases
+  29. Diagrama: "Diagrama de Clases - CU1 Gestión de Usuarios"
+      Título de figura sugerido: Figura X Diagrama de Clases – CU1 Gestión de Usuarios
+  30. Diagrama: "Diagrama de Clases - CU2 Gestión de Portal Web y Bitácora"
+      Título de figura sugerido: Figura X Diagrama de Clases – CU2 Gestión de Portal Web y Bitácora
+  31. Diagrama: "Diagrama de Clases - CU3 Información Académica, Malla y Plantel"
+      Título de figura sugerido: Figura X Diagrama de Clases – CU3 Información Académica, Malla y Plantel
+  32. Diagrama: "Diagrama de Clases - CU4 Investigaciones, INNOVAR y Repositorio"
+      Título de figura sugerido: Figura X Diagrama de Clases – CU4 Investigaciones, INNOVAR y Repositorio
+  33. Diagrama: "Diagrama de Clases - CU5 Vinculación, INNOVA y Graduados"
+      Título de figura sugerido: Figura X Diagrama de Clases – CU5 Vinculación, INNOVA y Graduados
+  34. Diagrama: "Diagrama de Clases - CU6 Noticias, Eventos y Galería"
+      Título de figura sugerido: Figura X Diagrama de Clases – CU6 Noticias, Eventos y Galería
+  35. Diagrama: "Diagrama de Clases - CU7 Consultas y Búsqueda Global"
+      Título de figura sugerido: Figura X Diagrama de Clases – CU7 Consultas y Búsqueda Global
+  36. Diagrama: "Diagrama de Clases - CU8 Reportes y Estadísticas"
+      Título de figura sugerido: Figura X Diagrama de Clases – CU8 Reportes y Estadísticas
+
+  Diseño conceptual de la base de datos
+  37. Diagrama: "Diseño Conceptual de la Base de Datos"
+      Título de figura sugerido: Figura X Diseño Conceptual de la Base de Datos
+
+  Diseño de casos de uso: diagramas de secuencia
+  38. Diagrama: "Diagrama de Secuencia - CU1 Gestión de Usuarios"
+      Título de figura sugerido: Figura X Diagrama de Secuencia – CU1: Gestión de Usuarios
+  39. Diagrama: "Diagrama de Secuencia - CU2 Gestión de Portal Web y Bitácora"
+      Título de figura sugerido: Figura X Diagrama de Secuencia – CU2: Gestión de Portal Web y Bitácora
+  40. Diagrama: "Diagrama de Secuencia - CU3 Información Académica, Malla y Plantel"
+      Título de figura sugerido: Figura X Diagrama de Secuencia – CU3: Información Académica, Malla y Plantel
+  41. Diagrama: "Diagrama de Secuencia - CU4 Investigaciones, INNOVAR y Repositorio"
+      Título de figura sugerido: Figura X Diagrama de Secuencia – CU4: Investigaciones, INNOVAR y Repositorio
+  42. Diagrama: "Diagrama de Secuencia - CU5 Vinculación, INNOVA y Graduados"
+      Título de figura sugerido: Figura X Diagrama de Secuencia – CU5: Vinculación, INNOVA y Graduados
+  43. Diagrama: "Diagrama de Secuencia - CU6 Noticias, Eventos y Galería"
+      Título de figura sugerido: Figura X Diagrama de Secuencia – CU6: Noticias, Eventos y Galería
+  44. Diagrama: "Diagrama de Secuencia - CU7 Consultas y Búsqueda Global"
+      Título de figura sugerido: Figura X Diagrama de Secuencia – CU7: Consultas y Búsqueda Global
+  45. Diagrama: "Diagrama de Secuencia - CU8 Reportes y Estadísticas"
+      Título de figura sugerido: Figura X Diagrama de Secuencia – CU8: Reportes y Estadísticas
+
+  Arquitectura (opcional, sección Implementación)
+  46. Diagrama: "Arquitectura del Sistema"
+      Título de figura sugerido: Figura X Arquitectura del Sistema
+
+
+DECISIONES DE MODELADO (coinciden con la documentación)
+-------------------------------------------------------
+- Actores: Administrador, Encargado de Módulo (Responsable de Noticias, Encargado
+  Revista INNOVAR, Administrador de Graduados, Secretaría Académica), Graduado y
+  Visitante. El "Propietario, Vendedor, Cliente" del enunciado del docente se
+  interpreta como Administrador, Encargado de Módulo y Graduado/Visitante.
+- Paquetes: Seguridad y Portal (CU1, CU2); Gestión Académica e Investigación
+  (CU3, CU4); Vinculación y Difusión (CU5, CU6); Atención y Análisis (CU7, CU8).
+- «include»: CU3, CU4, CU5 y CU6 incluyen CU2 (todo cambio queda en la bitácora);
+  CU7 incluye CU3, CU4 y CU6 (la búsqueda global recorre su contenido);
+  CU8 incluye CU2 (usa el contador de visitas y la bitácora).
+- Análisis: boundary = páginas Vue, control = controladores Laravel,
+  entity = modelos Eloquent. Diagramas de clases generados desde el código real
+  (app/Http/Controllers, app/Models, app/Http/Middleware, resources/js/pages).
