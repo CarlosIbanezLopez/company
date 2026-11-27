@@ -6,8 +6,10 @@ use App\Support\Archivo;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Agrega la URL pública de cada archivo ({campo}_url) al serializar
+ * Agrega la URL pública y absoluta de cada archivo ({campo}_url) al serializar a JSON
  * y elimina los archivos del disco cuando se borra el registro.
+ *
+ * El modelo declara los campos con archivo en `protected array $archivos = ['imagen'];`.
  */
 trait TieneArchivos
 {
@@ -27,9 +29,10 @@ trait TieneArchivos
     /** @return array<int, string> */
     public function camposArchivo(): array
     {
-        return property_exists($this, 'archivos') ? $this->archivos : [];
+        return $this->archivos;
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         $datos = parent::toArray();

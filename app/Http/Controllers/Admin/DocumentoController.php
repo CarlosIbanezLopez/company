@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU4 - Repositorio documental: subir, organizar y publicar PDFs (RF-06).
+ *
+ * @extends CrudController<Documento>
  */
 class DocumentoController extends CrudController
 {
@@ -17,7 +19,9 @@ class DocumentoController extends CrudController
 
     protected string $singular = 'documento';
 
-    protected string $ruta = 'admin.documentos';
+    protected string $recurso = 'documentos';
+
+    protected string $uri = 'documentos';
 
     protected ?string $descripcion = 'Documentos PDF agrupados por categoría.';
 

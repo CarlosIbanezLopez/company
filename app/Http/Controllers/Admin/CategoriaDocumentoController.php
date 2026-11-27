@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU4 - Categorías de la biblioteca digital (reglamentos, instructivos, formularios, convocatorias) (RF-06).
+ *
+ * @extends CrudController<CategoriaDocumento>
  */
 class CategoriaDocumentoController extends CrudController
 {
@@ -19,7 +21,9 @@ class CategoriaDocumentoController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.categorias-documento';
+    protected string $recurso = 'documentos';
+
+    protected string $uri = 'categorias-documento';
 
     protected array $buscarEn = ['nombre'];
 
@@ -29,6 +33,7 @@ class CategoriaDocumentoController extends CrudController
 
     protected ?string $slugDesde = 'nombre';
 
+    /** @return Builder<CategoriaDocumento> */
     protected function consulta(): Builder
     {
         return CategoriaDocumento::query()->withCount('documentos');

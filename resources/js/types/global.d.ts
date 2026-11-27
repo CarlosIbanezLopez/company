@@ -1,43 +1,14 @@
-import type { Directive } from 'vue';
-import type { Auth } from '@/types/auth';
-import type { DatosSitio, GrupoMenuAdmin } from '@/types/sitio';
+export {};
 
-// Extend ImportMeta interface for Vite...
-declare module 'vite/client' {
-    interface ImportMetaEnv {
-        readonly VITE_APP_NAME: string;
-        [key: string]: string | boolean | undefined;
-    }
-
-    interface ImportMeta {
-        readonly env: ImportMetaEnv;
-        readonly glob: <T>(pattern: string) => Record<string, () => Promise<T>>;
-    }
-}
-
-declare module '@inertiajs/core' {
-    export interface InertiaConfig {
-        sharedPageProps: {
-            name: string;
-            base: string;
-            auth: Auth;
-            sidebarOpen: boolean;
-            visitas: number | null;
-            sitio: DatosSitio;
-            menuAdmin: GrupoMenuAdmin[];
-            [key: string]: unknown;
+declare global {
+    interface Window {
+        /** Configuración inyectada por resources/views/app.blade.php. */
+        APP_CONFIG?: {
+            nombre?: string;
+            /** Ruta base de la SPA (vacía en la raíz o p. ej. /inf513/grupo23sa/proyecto2/public). */
+            base?: string;
+            /** URL absoluta de la API RESTful (p. ej. https://.../api). */
+            api?: string;
         };
-    }
-}
-
-declare module 'vue' {
-    interface GlobalDirectives {
-        vFocus: Directive<HTMLElement, boolean | undefined>;
-    }
-
-    interface ComponentCustomProperties {
-        $inertia: typeof Router;
-        $page: Page;
-        $headManager: ReturnType<typeof createHeadManager>;
     }
 }

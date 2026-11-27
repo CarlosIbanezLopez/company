@@ -4,15 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Album;
 use App\Models\Foto;
+use App\Support\ReglasCliente;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * CU6 - Galería multimedia: álbumes de fotografías por actividad (RF-14).
+ * Las fotografías de cada álbum se guardan en storage/app/public/galeria/{id}.
+ *
+ * @extends CrudController<Album>
  */
 class AlbumController extends CrudController
 {
@@ -22,7 +26,9 @@ class AlbumController extends CrudController
 
     protected string $singular = 'álbum';
 
-    protected string $ruta = 'admin.albumes';
+    protected string $recurso = 'galeria';
+
+    protected string $uri = 'albumes';
 
     protected array $buscarEn = ['titulo', 'descripcion'];
 
@@ -32,6 +38,7 @@ class AlbumController extends CrudController
 
     protected string $carpeta = 'galeria';
 
+    /** @return Builder<Album> */
     protected function consulta(): Builder
     {
         return Album::query()->withCount(['fotos', 'videos']);
@@ -39,7 +46,7 @@ class AlbumController extends CrudController
 
     protected function accionesFila(): array
     {
-        return [['etiqueta' => 'Fotos', 'icono' => 'images', 'url' => route('admin.albumes.fotos', ['id' => '__ID__'])]];
+        return [['etiqueta' => 'Fotos', 'url' => '/admin/albumes/__ID__/fotos', 'icono' => 'images', 'tipo' => 'enlace']];
     }
 
     protected function campos(): array
@@ -76,55 +83,129 @@ class AlbumController extends CrudController
         ];
     }
 
-    public function fotos(int $id): Response
+    /**
+     * La portada puede ser una de las fotografías del álbum: ese archivo no se borra al reemplazarla.
+     */
+    protected function borrarArchivo(?string $ruta): void
     {
-        $album = Album::query()->with(['fotos' => fn ($q) => $q->orderBy('orden')->orderBy('id')])->findOrFail($id);
+        if ($ruta && Foto::query()->where('imagen', $ruta)->exists()) {
+            return;
+        }
 
-        return Inertia::render('admin/Fotos', [
-            'album' => $album,
-            'urls' => [
-                'subir' => route('admin.albumes.fotos.store', $album->id),
-                'eliminar' => route('admin.albumes.fotos.destroy', ['id' => $album->id, 'foto' => '__FOTO__']),
-                'volver' => route('admin.albumes.index'),
-            ],
-        ]);
+        parent::borrarArchivo($ruta);
     }
 
-    public function subirFotos(Request $request, int $id): RedirectResponse
+    /**
+     * Al eliminar el álbum la base de datos borra sus fotografías en cascada; aquí se borran sus archivos.
+     */
+    public function destroy(int $id): JsonResponse
     {
-        $album = Album::query()->findOrFail($id);
+        $respuesta = parent::destroy($id);
 
-        $request->validate([
+        if ($respuesta->isSuccessful()) {
+            Storage::disk('public')->deleteDirectory('galeria/'.$id);
+        }
+
+        return $respuesta;
+    }
+
+    /** @return array<string, array<int, string>> */
+    private static function reglasFotos(): array
+    {
+        return [
             'fotos' => ['required', 'array', 'max:20'],
             'fotos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'descripcion' => ['nullable', 'string', 'max:255'],
-        ]);
-
-        $orden = (int) $album->fotos()->max('orden');
-
-        foreach ($request->file('fotos') as $archivo) {
-            $album->fotos()->create([
-                'imagen' => $archivo->store('galeria/'.$album->id, 'public'),
-                'descripcion' => $request->input('descripcion'),
-                'orden' => ++$orden,
-            ]);
-        }
-
-        if (! $album->portada) {
-            $album->update(['portada' => $album->fotos()->orderBy('orden')->value('imagen')]);
-        }
-
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Fotografías agregadas al álbum.']);
-
-        return back();
+        ];
     }
 
-    public function eliminarFoto(int $id, int $foto): RedirectResponse
+    /**
+     * GET /api/admin/albumes/{id}/fotos : álbum con sus fotografías (antes la página admin/Fotos).
+     * urls.subir / urls.eliminar son rutas de la API relativas a /api/ (__FOTO__ = id de la fotografía);
+     * urls.volver es la ruta de la SPA del listado de álbumes.
+     */
+    public function fotos(Request $request, int $id): JsonResponse
     {
-        Foto::query()->where('album_id', $id)->findOrFail($foto)->delete();
+        return response()->json($this->datosFotos($request, $this->albumConFotos($id)));
+    }
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Fotografía eliminada.']);
+    /**
+     * POST /api/admin/albumes/{id}/fotos (multipart: fotos[] y descripcion opcional).
+     */
+    public function subirFotos(Request $request, int $id): JsonResponse
+    {
+        $album = Album::query()->findOrFail($id);
 
-        return back();
+        $request->validate(self::reglasFotos(), [], [
+            'fotos' => 'Fotografías',
+            'fotos.*' => 'Fotografía',
+            'descripcion' => 'Descripción',
+        ]);
+
+        DB::transaction(function () use ($album, $request) {
+            $orden = (int) $album->fotos()->max('orden');
+
+            foreach ($request->file('fotos') as $archivo) {
+                $album->fotos()->create([
+                    'imagen' => $archivo->store('galeria/'.$album->id, 'public'),
+                    'descripcion' => $request->input('descripcion'),
+                    'orden' => ++$orden,
+                ]);
+            }
+
+            if (! $album->portada) {
+                $album->update(['portada' => $album->fotos()->orderBy('orden')->orderBy('id')->value('imagen')]);
+            }
+        });
+
+        return response()->json([
+            'message' => 'Fotografías agregadas al álbum.',
+            ...$this->datosFotos($request, $this->albumConFotos($id)),
+        ], 201);
+    }
+
+    /**
+     * DELETE /api/admin/albumes/{id}/fotos/{foto}
+     */
+    public function eliminarFoto(int $id, int $foto): JsonResponse
+    {
+        $album = Album::query()->findOrFail($id);
+        $fotografia = Foto::query()->where('album_id', $album->id)->findOrFail($foto);
+
+        DB::transaction(function () use ($album, $fotografia) {
+            $fotografia->delete();
+
+            // Si era la portada del álbum, se usa la siguiente fotografía (o ninguna).
+            if ($album->portada === $fotografia->imagen) {
+                $album->update(['portada' => $album->fotos()->orderBy('orden')->orderBy('id')->value('imagen')]);
+            }
+        });
+
+        return response()->json(['message' => 'Fotografía eliminada.']);
+    }
+
+    private function albumConFotos(int $id): Album
+    {
+        return Album::query()->with(['fotos' => fn ($q) => $q->orderBy('orden')->orderBy('id')])->findOrFail($id);
+    }
+
+    /** @return array<string, mixed> */
+    private function datosFotos(Request $request, Album $album): array
+    {
+        $usuario = $request->user();
+
+        return [
+            'album' => $album,
+            'urls' => [
+                'subir' => "admin/albumes/{$album->id}/fotos",
+                'eliminar' => "admin/albumes/{$album->id}/fotos/__FOTO__",
+                'volver' => '/admin/albumes',
+            ],
+            'permisos' => [
+                'subir' => (bool) $usuario?->tienePermiso('galeria.crear'),
+                'eliminar' => (bool) $usuario?->tienePermiso('galeria.eliminar'),
+            ],
+            'reglas' => ReglasCliente::todas(self::reglasFotos()),
+        ];
     }
 }

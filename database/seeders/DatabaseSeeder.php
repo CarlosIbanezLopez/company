@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Storage;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Carga los datos iniciales del sistema.
-     * Usuario administrador: admin@carrera.test / password
+     * Carga los datos iniciales del sistema (contraseña de todas las cuentas: "password"):
+     * admin@carrera.test, noticias@carrera.test, revista@carrera.test, graduados@carrera.test,
+     * secretaria@carrera.test y graduado@carrera.test (rol Graduado, con ficha).
+     * VisitasSeeder genera tráfico de ejemplo; los contadores los calculan los triggers.
      */
     public function run(): void
     {

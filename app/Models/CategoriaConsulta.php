@@ -19,6 +19,7 @@ class CategoriaConsulta extends Model
         'correo_destino',
     ];
 
+    /** @return HasMany<Consulta, $this> */
     public function consultas(): HasMany
     {
         return $this->hasMany(Consulta::class, 'categoria_consulta_id');

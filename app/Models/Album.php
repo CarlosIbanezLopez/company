@@ -24,7 +24,7 @@ class Album extends Model
         'publicado',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['portada'];
 
     protected function casts(): array
@@ -35,11 +35,13 @@ class Album extends Model
         ];
     }
 
+    /** @return HasMany<Foto, $this> */
     public function fotos(): HasMany
     {
         return $this->hasMany(Foto::class, 'album_id');
     }
 
+    /** @return HasMany<Video, $this> */
     public function videos(): HasMany
     {
         return $this->hasMany(Video::class, 'album_id');

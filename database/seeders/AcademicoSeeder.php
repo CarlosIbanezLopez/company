@@ -157,9 +157,8 @@ class AcademicoSeeder extends Seeder
             ['GRA-1000', 'Modalidad de Graduación', 10, 10, ['TG-901', 'PRA-901']],
         ];
 
-        $ids = [];
         foreach ($materias as [$sigla, $nombre, $semestre, $creditos]) {
-            $ids[$sigla] = Materia::query()->create([
+            Materia::query()->create([
                 'sigla' => $sigla,
                 'nombre' => $nombre,
                 'semestre' => $semestre,
@@ -168,12 +167,15 @@ class AcademicoSeeder extends Seeder
                 'horas_practicas' => max(0, $creditos - 3),
                 'tipo' => str_starts_with($sigla, 'ELE') ? 'electiva' : ($sigla === 'GRA-1000' ? 'modalidad' : 'obligatoria'),
                 'descripcion' => "Asignatura del {$semestre}° semestre. Contenido mínimo de ejemplo: reemplazar por el programa analítico oficial.",
-            ])->id;
+            ]);
         }
+
+        // Id de cada materia por sigla (una sigla de prerrequisito mal escrita detiene el seeder).
+        $ids = Materia::query()->pluck('id', 'sigla')->all();
 
         foreach ($materias as [$sigla, , , , $pre]) {
             if ($pre) {
-                Materia::query()->find($ids[$sigla])->prerequisitos()->sync(array_map(fn ($p) => $ids[$p], $pre));
+                Materia::query()->where('sigla', $sigla)->firstOrFail()->prerequisitos()->sync(array_map(fn ($p) => $ids[$p], $pre));
             }
         }
     }

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU5 - Proyectos desarrollados por la Empresa Junior INNOVA (RF-10).
+ *
+ * @extends CrudController<InnovaProyecto>
  */
 class InnovaProyectoController extends CrudController
 {
@@ -16,7 +18,9 @@ class InnovaProyectoController extends CrudController
 
     protected string $singular = 'proyecto';
 
-    protected string $ruta = 'admin.innova-proyectos';
+    protected string $recurso = 'innova';
+
+    protected string $uri = 'innova-proyectos';
 
     protected array $buscarEn = ['titulo', 'cliente'];
 

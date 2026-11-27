@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU5 - Integrantes de la Empresa Junior INNOVA (RF-10).
+ *
+ * @extends CrudController<InnovaIntegrante>
  */
 class InnovaIntegranteController extends CrudController
 {
@@ -16,7 +18,9 @@ class InnovaIntegranteController extends CrudController
 
     protected string $singular = 'integrante';
 
-    protected string $ruta = 'admin.innova-integrantes';
+    protected string $recurso = 'innova';
+
+    protected string $uri = 'innova-integrantes';
 
     protected array $buscarEn = ['nombre', 'cargo'];
 

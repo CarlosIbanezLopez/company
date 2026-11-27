@@ -29,6 +29,12 @@ class NuevaConsultaMail extends Mailable
 
     public function content(): Content
     {
-        return new Content(view: 'mail.nueva-consulta');
+        return new Content(
+            view: 'mail.nueva-consulta',
+            with: [
+                // Ruta de la SPA del panel (/admin/:uri/:id/editar).
+                'enlacePanel' => url('/admin/consultas/'.$this->consulta->id.'/editar'),
+            ],
+        );
     }
 }

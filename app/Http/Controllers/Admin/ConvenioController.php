@@ -9,6 +9,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU5 - Convenios, prácticas, proyectos con empresas, consultorías e interacción social (RF-09).
+ *
+ * @extends CrudController<Convenio>
  */
 class ConvenioController extends CrudController
 {
@@ -18,7 +20,9 @@ class ConvenioController extends CrudController
 
     protected string $singular = 'convenio';
 
-    protected string $ruta = 'admin.convenios';
+    protected string $recurso = 'vinculacion';
+
+    protected string $uri = 'convenios';
 
     protected array $buscarEn = ['institucion', 'finalidad'];
 

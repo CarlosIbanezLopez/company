@@ -19,6 +19,7 @@ class CategoriaNoticia extends Model
         'slug',
     ];
 
+    /** @return HasMany<Noticia, $this> */
     public function noticias(): HasMany
     {
         return $this->hasMany(Noticia::class, 'categoria_noticia_id');

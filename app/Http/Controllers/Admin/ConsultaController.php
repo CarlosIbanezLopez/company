@@ -6,12 +6,14 @@ use App\Models\CategoriaConsulta;
 use App\Models\Consulta;
 use App\Support\Catalogos;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Inertia\Response;
 
 /**
  * CU7 - Revisión administrativa de las consultas recibidas (RF-15).
+ *
+ * @extends CrudController<Consulta>
  */
 class ConsultaController extends CrudController
 {
@@ -23,7 +25,9 @@ class ConsultaController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.consultas';
+    protected string $recurso = 'consultas';
+
+    protected string $uri = 'consultas';
 
     protected ?string $descripcion = 'Mensajes enviados por visitantes desde el formulario de contacto.';
 
@@ -47,15 +51,18 @@ class ConsultaController extends CrudController
         ];
     }
 
-    public function edit(Request $request, int $id): Response
+    /**
+     * Cuando un usuario que puede atenderla abre una consulta nueva, esta pasa a "en revisión".
+     */
+    public function show(Request $request, int $id): JsonResponse
     {
         $consulta = Consulta::query()->findOrFail($id);
 
-        if ($consulta->estado === 'nueva') {
+        if ($consulta->estado === 'nueva' && $request->user()?->tienePermiso('consultas.editar')) {
             $consulta->update(['estado' => 'en_revision']);
         }
 
-        return parent::edit($request, $id);
+        return parent::show($request, $id);
     }
 
     protected function valores(Model $registro): array

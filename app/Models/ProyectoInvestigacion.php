@@ -32,7 +32,7 @@ class ProyectoInvestigacion extends Model
         'publicado',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['imagen'];
 
     protected function casts(): array
@@ -44,6 +44,7 @@ class ProyectoInvestigacion extends Model
         ];
     }
 
+    /** @return BelongsTo<LineaInvestigacion, $this> */
     public function linea(): BelongsTo
     {
         return $this->belongsTo(LineaInvestigacion::class, 'linea_investigacion_id');

@@ -32,11 +32,13 @@ class MenuItem extends Model
         ];
     }
 
+    /** @return BelongsTo<MenuItem, $this> */
     public function padre(): BelongsTo
     {
         return $this->belongsTo(MenuItem::class, 'padre_id');
     }
 
+    /** @return HasMany<MenuItem, $this> */
     public function hijos(): HasMany
     {
         return $this->hasMany(MenuItem::class, 'padre_id');

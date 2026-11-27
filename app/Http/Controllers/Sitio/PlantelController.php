@@ -3,20 +3,25 @@
 namespace App\Http\Controllers\Sitio;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Sitio\Concerns\FiltrosConsulta;
 use App\Models\Docente;
+use App\Support\Archivo;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
 
 /**
  * Autoridades y docentes (RF-03). Solo se publica la información autorizada.
  */
 class PlantelController extends Controller
 {
-    public function index(Request $request): Response
+    use FiltrosConsulta;
+
+    public function index(Request $request): JsonResponse
     {
+        $texto = $this->texto($request, 'q');
+
         $docentes = Docente::query()->where('visible', true)
-            ->when($request->query('q'), fn ($q, $texto) => $q->where(fn ($w) => $w->whereLike('nombre', "%$texto%")->orWhereLike('especialidad', "%$texto%")->orWhereLike('materias', "%$texto%")))
+            ->when($texto, fn ($q, $texto) => $this->contiene($q, ['nombre', 'especialidad', 'materias'], $texto))
             ->orderBy('orden')->orderBy('nombre')->get()
             ->map(fn (Docente $d) => [
                 'id' => $d->id,
@@ -27,13 +32,13 @@ class PlantelController extends Controller
                 'materias' => $d->materias,
                 'formacion' => $d->mostrar_formacion ? $d->formacion : null,
                 'correo' => $d->mostrar_correo ? $d->correo : null,
-                'foto_url' => $d->toArray()['foto_url'],
+                'foto_url' => Archivo::url($d->foto),
             ]);
 
-        return Inertia::render('sitio/Plantel', [
+        return response()->json([
             'autoridades' => $docentes->where('tipo', 'autoridad')->values(),
             'docentes' => $docentes->where('tipo', '!=', 'autoridad')->values(),
-            'q' => $request->query('q'),
+            'q' => $texto,
         ]);
     }
 }

@@ -10,6 +10,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU3 - Malla curricular: materias por semestre y sus prerrequisitos (RF-04).
+ *
+ * @extends CrudController<Materia>
  */
 class MateriaController extends CrudController
 {
@@ -21,7 +23,9 @@ class MateriaController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.materias';
+    protected string $recurso = 'academico';
+
+    protected string $uri = 'materias';
 
     protected ?string $descripcion = 'Materias del plan de estudios y sus prerrequisitos.';
 

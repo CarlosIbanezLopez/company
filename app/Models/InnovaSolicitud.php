@@ -25,6 +25,7 @@ class InnovaSolicitud extends Model
         'observacion',
     ];
 
+    /** @return BelongsTo<InnovaServicio, $this> */
     public function servicio(): BelongsTo
     {
         return $this->belongsTo(InnovaServicio::class, 'innova_servicio_id');

@@ -20,6 +20,10 @@ class Recursos
         ['#1f2937', '#475569'],
     ];
 
+    /**
+     * @param  positive-int  $ancho
+     * @param  positive-int  $alto
+     */
     public static function imagen(string $carpeta, string $texto, int $ancho = 1200, int $alto = 675, ?int $paleta = null, ?string $subtexto = null, bool $conTexto = false): ?string
     {
         if (! function_exists('imagecreatetruecolor')) {
@@ -30,22 +34,27 @@ class Recursos
         [$c1, $c2] = self::PALETAS[$paleta % count(self::PALETAS)];
 
         $img = imagecreatetruecolor($ancho, $alto);
+
+        if ($img === false) {
+            return null;
+        }
+
         [$r1, $g1, $b1] = sscanf($c1, '#%02x%02x%02x');
         [$r2, $g2, $b2] = sscanf($c2, '#%02x%02x%02x');
 
         // Degradado diagonal simple.
         for ($x = 0; $x < $ancho; $x += 4) {
             $t = $x / $ancho;
-            $color = imagecolorallocate($img, (int) ($r1 + ($r2 - $r1) * $t), (int) ($g1 + ($g2 - $g1) * $t), (int) ($b1 + ($b2 - $b1) * $t));
+            $color = self::color($img, self::canal($r1 + ($r2 - $r1) * $t), self::canal($g1 + ($g2 - $g1) * $t), self::canal($b1 + ($b2 - $b1) * $t));
             imagefilledrectangle($img, $x, 0, $x + 3, $alto, $color);
         }
 
         // Bloques geométricos rectos (sin bordes redondeados).
-        $claro = imagecolorallocatealpha($img, 255, 255, 255, 110);
+        $claro = self::color($img, 255, 255, 255, 110);
         imagefilledrectangle($img, (int) ($ancho * 0.62), (int) ($alto * 0.12), (int) ($ancho * 0.92), (int) ($alto * 0.88), $claro);
         imagefilledrectangle($img, (int) ($ancho * 0.70), (int) ($alto * 0.22), (int) ($ancho * 0.98), (int) ($alto * 0.62), $claro);
 
-        $blanco = imagecolorallocate($img, 255, 255, 255);
+        $blanco = self::color($img, 255, 255, 255);
         $fuente = __DIR__.'/recursos/fuente.ttf';
 
         if ($conTexto && is_file($fuente) && function_exists('imagettftext')) {
@@ -68,10 +77,41 @@ class Recursos
         $contenido = ob_get_clean();
         imagedestroy($img);
 
-        $ruta = trim($carpeta, '/').'/'.Str::slug(Str::limit($texto, 40, '')).'-'.Str::random(6).'.jpg';
+        // Nombre determinista: volver a sembrar sobrescribe el mismo archivo en lugar de acumular copias.
+        $huella = substr(md5(serialize([$carpeta, $texto, $ancho, $alto, $paleta, $subtexto, $conTexto])), 0, 6);
+        $ruta = trim($carpeta, '/').'/'.Str::slug(Str::limit($texto, 40, '')).'-'.$huella.'.jpg';
         Storage::disk('public')->put($ruta, $contenido);
 
         return $ruta;
+    }
+
+    /**
+     * Componente de color (rojo, verde o azul) dentro del rango válido 0..255.
+     *
+     * @return int<0, 255>
+     */
+    private static function canal(float|int $valor): int
+    {
+        return max(0, min(255, (int) $valor));
+    }
+
+    /**
+     * Reserva un color en la imagen (alfa 0 = opaco, 127 = transparente).
+     *
+     * @param  int<0, 255>  $rojo
+     * @param  int<0, 255>  $verde
+     * @param  int<0, 255>  $azul
+     * @param  int<0, 127>  $alfa
+     */
+    private static function color(\GdImage $img, int $rojo, int $verde, int $azul, int $alfa = 0): int
+    {
+        $color = imagecolorallocatealpha($img, $rojo, $verde, $azul, $alfa);
+
+        if ($color === false) {
+            throw new \RuntimeException('No se pudo reservar un color para la imagen de ejemplo.');
+        }
+
+        return $color;
     }
 
     /**
@@ -111,7 +151,8 @@ class Recursos
         }
         $pdf .= "trailer\n<< /Size ".(count($objetos) + 1)." /Root 1 0 R >>\nstartxref\n$xref\n%%EOF";
 
-        $ruta = trim($carpeta, '/').'/'.Str::slug(Str::limit($titulo, 50, '')).'-'.Str::random(6).'.pdf';
+        $huella = substr(md5(serialize([$carpeta, $titulo, $texto])), 0, 6);
+        $ruta = trim($carpeta, '/').'/'.Str::slug(Str::limit($titulo, 50, '')).'-'.$huella.'.pdf';
         Storage::disk('public')->put($ruta, $pdf);
 
         return $ruta;

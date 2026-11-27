@@ -11,10 +11,8 @@ use App\Models\InnovaSolicitud;
 use App\Models\Pagina;
 use App\Support\Antispam;
 use App\Support\Markdown;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
 
 /**
  * Empresa Junior INNOVA: información, servicios, integrantes, proyectos y
@@ -22,42 +20,50 @@ use Inertia\Response;
  */
 class InnovaController extends Controller
 {
-    public function index(): Response
-    {
-        $descripcion = Pagina::query()->where('seccion', 'innova')->where('publicado', true)->orderBy('orden')->first();
+    /** Ambos formularios de la página comparten el mismo token antispam (sin pregunta). */
+    private const FORMULARIO = 'innova';
 
-        return Inertia::render('sitio/Innova', [
+    public function index(): JsonResponse
+    {
+        $descripcion = Pagina::query()->where('seccion', 'innova')->where('publicado', true)->orderBy('orden')->orderBy('id')->first();
+
+        return response()->json([
             'descripcion' => $descripcion ? ['titulo' => $descripcion->titulo, 'html' => Markdown::html($descripcion->contenido)] : null,
             'servicios' => InnovaServicio::query()->where('activo', true)->orderBy('orden')->get(),
             'integrantes' => InnovaIntegrante::query()->where('activo', true)->orderBy('orden')->get(),
-            'proyectos' => InnovaProyecto::query()->where('publicado', true)->orderByDesc('fecha')->get(),
-            'antispam' => Antispam::generar('innova', false),
+            'proyectos' => InnovaProyecto::query()->where('publicado', true)
+                ->orderByRaw('fecha is null')->orderByDesc('fecha')->orderByDesc('id')->get(),
+            'antispam' => Antispam::generar(self::FORMULARIO, false),
         ]);
     }
 
-    public function solicitar(Request $request): RedirectResponse
+    public function solicitar(Request $request): JsonResponse
     {
-        Antispam::validar($request, 'innova', false);
+        Antispam::validar($request, self::FORMULARIO, false);
 
         $datos = $request->validate([
             'empresa' => ['required', 'string', 'max:150'],
             'contacto' => ['required', 'string', 'max:150'],
             'correo' => ['required', 'email', 'max:150'],
             'telefono' => ['nullable', 'string', 'max:30'],
-            'innova_servicio_id' => ['nullable', 'exists:innova_servicios,id'],
+            // "bail": no consultar la tabla si el valor no es numérico (PostgreSQL fallaría).
+            'innova_servicio_id' => ['bail', 'nullable', 'integer', 'exists:innova_servicios,id'],
             'mensaje' => ['required', 'string', 'min:10', 'max:3000'],
         ]);
 
         InnovaSolicitud::query()->create($datos);
+        Antispam::consumir($request);
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Solicitud enviada. El equipo de INNOVA se comunicará con usted.']);
-
-        return back();
+        return response()->json([
+            'message' => 'Solicitud enviada. El equipo de INNOVA se comunicará con usted.',
+            // Token nuevo para un siguiente envío sin recargar la página.
+            'antispam' => Antispam::generar(self::FORMULARIO, false),
+        ], 201);
     }
 
-    public function postular(Request $request): RedirectResponse
+    public function postular(Request $request): JsonResponse
     {
-        Antispam::validar($request, 'innova', false);
+        Antispam::validar($request, self::FORMULARIO, false);
 
         $datos = $request->validate([
             'nombre' => ['required', 'string', 'max:150'],
@@ -69,9 +75,11 @@ class InnovaController extends Controller
         ]);
 
         InnovaPostulacion::query()->create($datos);
+        Antispam::consumir($request);
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Postulación registrada. ¡Gracias por su interés en INNOVA!']);
-
-        return back();
+        return response()->json([
+            'message' => 'Postulación registrada. ¡Gracias por su interés en INNOVA!',
+            'antispam' => Antispam::generar(self::FORMULARIO, false),
+        ], 201);
     }
 }

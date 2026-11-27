@@ -10,6 +10,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU4 - Proyectos de investigación, PIA, semilleros y producción académica (RF-07).
+ *
+ * @extends CrudController<ProyectoInvestigacion>
  */
 class ProyectoInvestigacionController extends CrudController
 {
@@ -19,7 +21,9 @@ class ProyectoInvestigacionController extends CrudController
 
     protected string $singular = 'proyecto';
 
-    protected string $ruta = 'admin.proyectos';
+    protected string $recurso = 'investigacion';
+
+    protected string $uri = 'proyectos';
 
     protected array $buscarEn = ['titulo', 'responsables', 'descripcion'];
 

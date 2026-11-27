@@ -3,36 +3,41 @@
 namespace App\Http\Controllers\Sitio;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Sitio\Concerns\FiltrosConsulta;
 use App\Models\ActividadCalendario;
 use App\Models\PreguntaFrecuente;
 use App\Support\Catalogos;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
 
 /**
  * Calendario académico y preguntas frecuentes (RF-05).
  */
 class AcademicoController extends Controller
 {
-    public function calendario(Request $request): Response
+    use FiltrosConsulta;
+
+    public function calendario(Request $request): JsonResponse
     {
         $gestiones = ActividadCalendario::query()->distinct()->orderByDesc('gestion')->pluck('gestion');
-        $gestion = $request->query('gestion', $gestiones->first());
+        $gestion = $this->texto($request, 'gestion', 20) ?? $gestiones->first();
 
-        return Inertia::render('sitio/Calendario', [
-            'actividades' => ActividadCalendario::query()->where('gestion', $gestion)->orderBy('fecha_inicio')->get(),
+        return response()->json([
+            'actividades' => ActividadCalendario::query()->where('gestion', $gestion)->orderBy('fecha_inicio')->orderBy('id')->get(),
             'gestiones' => $gestiones,
             'gestion' => $gestion,
             'tipos' => Catalogos::TIPOS_CALENDARIO,
         ]);
     }
 
-    public function preguntas(): Response
+    public function preguntas(): JsonResponse
     {
-        return Inertia::render('sitio/Preguntas', [
-            'grupos' => PreguntaFrecuente::query()->where('activo', true)->orderBy('orden')->get()
-                ->groupBy(fn ($p) => $p->categoria ?: 'General'),
+        $grupos = PreguntaFrecuente::query()->where('activo', true)->orderBy('orden')->orderBy('id')->get()
+            ->groupBy(fn (PreguntaFrecuente $p) => $p->categoria ?: 'General');
+
+        return response()->json([
+            // Objeto { categoría: [preguntas] } (también cuando está vacío).
+            'grupos' => (object) $grupos->all(),
         ]);
     }
 }

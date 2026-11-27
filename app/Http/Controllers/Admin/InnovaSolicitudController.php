@@ -10,6 +10,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU5 - Solicitudes de servicio enviadas por empresas a INNOVA (RF-10).
+ *
+ * @extends CrudController<InnovaSolicitud>
  */
 class InnovaSolicitudController extends CrudController
 {
@@ -21,7 +23,9 @@ class InnovaSolicitudController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.innova-solicitudes';
+    protected string $recurso = 'innova';
+
+    protected string $uri = 'innova-solicitudes';
 
     protected array $buscarEn = ['empresa', 'contacto', 'correo'];
 
@@ -46,7 +50,7 @@ class InnovaSolicitudController extends CrudController
 
     protected function valores(Model $registro): array
     {
-        return [...$registro->toArray(), 'servicio_nombre' => $registro->servicio?->nombre ?? 'Otro', 'fecha' => $registro->created_at?->format('d/m/Y H:i')];
+        return [...$registro->toArray(), 'servicio_nombre' => $registro->servicio->nombre ?? 'Otro', 'fecha' => $registro->created_at?->format('d/m/Y H:i')];
     }
 
     protected function columnas(): array

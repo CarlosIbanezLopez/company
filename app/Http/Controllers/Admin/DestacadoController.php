@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU2 - Información destacada del inicio (cifras y datos clave) (RF-01).
+ *
+ * @extends CrudController<Destacado>
  */
 class DestacadoController extends CrudController
 {
@@ -16,7 +18,9 @@ class DestacadoController extends CrudController
 
     protected string $singular = 'destacado';
 
-    protected string $ruta = 'admin.destacados';
+    protected string $recurso = 'portal';
+
+    protected string $uri = 'destacados';
 
     protected ?string $descripcion = 'Cifras y datos clave que se muestran en la página de inicio.';
 

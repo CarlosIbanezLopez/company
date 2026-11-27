@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU3 - Preguntas frecuentes de los estudiantes (RF-05).
+ *
+ * @extends CrudController<PreguntaFrecuente>
  */
 class PreguntaFrecuenteController extends CrudController
 {
@@ -18,7 +20,9 @@ class PreguntaFrecuenteController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.preguntas';
+    protected string $recurso = 'academico';
+
+    protected string $uri = 'preguntas';
 
     protected array $buscarEn = ['pregunta', 'respuesta', 'categoria'];
 

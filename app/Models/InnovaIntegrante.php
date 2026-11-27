@@ -23,7 +23,7 @@ class InnovaIntegrante extends Model
         'activo',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['foto'];
 
     protected function casts(): array

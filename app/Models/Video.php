@@ -29,6 +29,7 @@ class Video extends Model
         ];
     }
 
+    /** @return BelongsTo<Album, $this> */
     public function album(): BelongsTo
     {
         return $this->belongsTo(Album::class, 'album_id');

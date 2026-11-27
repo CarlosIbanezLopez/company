@@ -29,7 +29,7 @@ class Docente extends Model
         'orden',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['foto'];
 
     protected function casts(): array

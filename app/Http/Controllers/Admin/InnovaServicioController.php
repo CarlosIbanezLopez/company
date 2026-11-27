@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU5 - Servicios ofrecidos por la Empresa Junior INNOVA (RF-10).
+ *
+ * @extends CrudController<InnovaServicio>
  */
 class InnovaServicioController extends CrudController
 {
@@ -16,7 +18,9 @@ class InnovaServicioController extends CrudController
 
     protected string $singular = 'servicio';
 
-    protected string $ruta = 'admin.innova-servicios';
+    protected string $recurso = 'innova';
+
+    protected string $uri = 'innova-servicios';
 
     protected array $buscarEn = ['nombre'];
 

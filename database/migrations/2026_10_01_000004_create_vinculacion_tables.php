@@ -57,7 +57,7 @@ return new class extends Migration
 
         Schema::create('innova_solicitudes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('innova_servicio_id')->nullable()->constrained('innova_servicios')->nullOnDelete();
+            $table->foreignId('innova_servicio_id')->nullable()->index()->constrained('innova_servicios')->nullOnDelete();
             $table->string('empresa', 150);
             $table->string('contacto', 150);
             $table->string('correo', 150);

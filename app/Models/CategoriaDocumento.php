@@ -20,6 +20,7 @@ class CategoriaDocumento extends Model
         'descripcion',
     ];
 
+    /** @return HasMany<Documento, $this> */
     public function documentos(): HasMany
     {
         return $this->hasMany(Documento::class, 'categoria_documento_id');

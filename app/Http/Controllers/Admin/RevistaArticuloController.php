@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU4 - Artículos publicados en cada edición de la Revista INNOVAR (RF-08).
+ *
+ * @extends CrudController<RevistaArticulo>
  */
 class RevistaArticuloController extends CrudController
 {
@@ -17,7 +19,9 @@ class RevistaArticuloController extends CrudController
 
     protected string $singular = 'artículo';
 
-    protected string $ruta = 'admin.articulos';
+    protected string $recurso = 'revista';
+
+    protected string $uri = 'articulos';
 
     protected array $buscarEn = ['titulo', 'autores', 'palabras_clave'];
 
@@ -25,6 +29,7 @@ class RevistaArticuloController extends CrudController
 
     protected string $carpeta = 'revista/articulos';
 
+    /** @return array<int, array{value: int, label: string}> */
     private function ediciones(): array
     {
         return RevistaEdicion::query()->orderByDesc('numero')->get()

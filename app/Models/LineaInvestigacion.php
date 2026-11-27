@@ -27,6 +27,7 @@ class LineaInvestigacion extends Model
         ];
     }
 
+    /** @return HasMany<ProyectoInvestigacion, $this> */
     public function proyectos(): HasMany
     {
         return $this->hasMany(ProyectoInvestigacion::class, 'linea_investigacion_id');

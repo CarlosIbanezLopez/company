@@ -25,9 +25,10 @@ class RevistaArticulo extends Model
         'orden',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['archivo_pdf'];
 
+    /** @return BelongsTo<RevistaEdicion, $this> */
     public function edicion(): BelongsTo
     {
         return $this->belongsTo(RevistaEdicion::class, 'revista_edicion_id');

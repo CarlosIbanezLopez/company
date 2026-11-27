@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * CU5 - Seguimiento a graduados: revisar, buscar, filtrar y exportar (RF-11).
+ *
+ * @extends CrudController<Graduado>
  */
 class GraduadoController extends CrudController
 {
@@ -21,7 +23,9 @@ class GraduadoController extends CrudController
 
     protected string $singular = 'graduado';
 
-    protected string $ruta = 'admin.graduados';
+    protected string $recurso = 'graduados';
+
+    protected string $uri = 'graduados';
 
     protected ?string $descripcion = 'Registros que los titulados completan desde el sitio web.';
 
@@ -29,9 +33,12 @@ class GraduadoController extends CrudController
 
     protected string $ordenarPor = 'anio_graduacion';
 
+    /**
+     * Descarga del CSV: la SPA llama a GET /api/admin/graduados/exportar con los filtros actuales.
+     */
     protected function accionesExtra(Request $request): array
     {
-        return [['etiqueta' => 'Exportar CSV', 'icono' => 'download', 'url' => route('admin.graduados.exportar', $request->query()), 'externo' => true]];
+        return [['etiqueta' => 'Exportar CSV', 'url' => 'admin/graduados/exportar', 'icono' => 'download', 'tipo' => 'descarga']];
     }
 
     protected function campos(): array
@@ -92,7 +99,8 @@ class GraduadoController extends CrudController
     }
 
     /**
-     * Exporta los graduados filtrados a CSV (compatible con Excel).
+     * GET /api/admin/graduados/exportar?q=&{filtros}= : graduados filtrados en CSV (separador ";",
+     * UTF-8 con BOM, compatible con Excel). Aplica la misma búsqueda y filtros que el listado.
      */
     public function exportar(Request $request): StreamedResponse
     {
@@ -109,10 +117,15 @@ class GraduadoController extends CrudController
 
         return response()->streamDownload(function () use ($consulta) {
             $salida = fopen('php://output', 'w');
-            fwrite($salida, "\xEF\xBB\xBF");
-            fputcsv($salida, ['Nombre', 'CI', 'Registro', 'Año de graduación', 'Modalidad', 'Situación laboral', 'Empresa', 'Cargo', 'Ciudad', 'Correo', 'Teléfono', 'LinkedIn', 'Última actualización'], ';');
 
-            $consulta->orderBy('anio_graduacion')->orderBy('nombre')->chunk(200, function ($graduados) use ($salida) {
+            if ($salida === false) {
+                return;
+            }
+
+            fwrite($salida, "\xEF\xBB\xBF");
+            fputcsv($salida, ['Nombre', 'CI', 'Registro', 'Año de graduación', 'Modalidad', 'Situación laboral', 'Empresa', 'Cargo', 'Ciudad', 'Correo', 'Teléfono', 'LinkedIn', 'Última actualización'], ';', '"', '');
+
+            $consulta->orderBy('anio_graduacion')->orderBy('nombre')->orderBy('id')->chunk(200, function ($graduados) use ($salida) {
                 foreach ($graduados as $g) {
                     fputcsv($salida, [
                         $g->nombre, $g->ci, $g->registro, $g->anio_graduacion,
@@ -120,7 +133,7 @@ class GraduadoController extends CrudController
                         Catalogos::SITUACIONES_LABORALES[$g->situacion_laboral] ?? $g->situacion_laboral,
                         $g->empresa, $g->cargo, $g->ciudad, $g->correo, $g->telefono, $g->linkedin,
                         $g->updated_at?->format('d/m/Y'),
-                    ], ';');
+                    ], ';', '"', '');
                 }
             });
 

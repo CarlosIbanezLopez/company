@@ -21,7 +21,7 @@ return new class extends Migration
 
         Schema::create('documentos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('categoria_documento_id')->constrained('categorias_documento')->restrictOnDelete();
+            $table->foreignId('categoria_documento_id')->index()->constrained('categorias_documento')->restrictOnDelete();
             $table->string('titulo', 200);
             $table->string('descripcion', 500)->nullable();
             $table->string('archivo')->nullable();
@@ -41,7 +41,7 @@ return new class extends Migration
 
         Schema::create('proyectos_investigacion', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('linea_investigacion_id')->nullable()->constrained('lineas_investigacion')->nullOnDelete();
+            $table->foreignId('linea_investigacion_id')->nullable()->index()->constrained('lineas_investigacion')->nullOnDelete();
             $table->string('tipo', 20)->default('proyecto')->index();
             $table->string('titulo', 200);
             $table->string('slug', 220)->unique();
@@ -72,7 +72,7 @@ return new class extends Migration
 
         Schema::create('revista_articulos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('revista_edicion_id')->constrained('revista_ediciones')->cascadeOnDelete();
+            $table->foreignId('revista_edicion_id')->index()->constrained('revista_ediciones')->cascadeOnDelete();
             $table->string('titulo', 255);
             $table->string('autores', 255);
             $table->text('resumen')->nullable();

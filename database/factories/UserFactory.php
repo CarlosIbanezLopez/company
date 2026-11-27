@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -13,12 +14,12 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * Contraseña (ya cifrada) que comparten los usuarios generados.
      */
     protected static ?string $password;
 
     /**
-     * Define the model's default state.
+     * Estado por defecto: cuenta activa, sin rol y con el correo verificado.
      *
      * @return array<string, mixed>
      */
@@ -27,17 +28,16 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'telefono' => null,
+            'activo' => true,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'two_factor_secret' => null,
-            'two_factor_recovery_codes' => null,
-            'two_factor_confirmed_at' => null,
         ];
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Correo sin verificar.
      */
     public function unverified(): static
     {
@@ -47,14 +47,22 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model has two-factor authentication configured.
+     * Cuenta deshabilitada por el administrador.
      */
-    public function withTwoFactor(): static
+    public function inactivo(): static
     {
         return $this->state(fn (array $attributes) => [
-            'two_factor_secret' => encrypt('secret'),
-            'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code-1'])),
-            'two_factor_confirmed_at' => now(),
+            'activo' => false,
+        ]);
+    }
+
+    /**
+     * Asigna un rol existente por su nombre (p. ej. "Responsable de Noticias").
+     */
+    public function conRol(string $rol): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'rol_id' => Rol::query()->where('nombre', $rol)->value('id'),
         ]);
     }
 }

@@ -9,6 +9,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU5 - Postulaciones de estudiantes para integrar INNOVA (RF-10).
+ *
+ * @extends CrudController<InnovaPostulacion>
  */
 class InnovaPostulacionController extends CrudController
 {
@@ -20,7 +22,9 @@ class InnovaPostulacionController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.innova-postulaciones';
+    protected string $recurso = 'innova';
+
+    protected string $uri = 'innova-postulaciones';
 
     protected array $buscarEn = ['nombre', 'registro', 'correo'];
 

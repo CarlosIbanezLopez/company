@@ -25,7 +25,7 @@ class RevistaEdicion extends Model
         'publicado',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['portada', 'archivo_pdf'];
 
     protected function casts(): array
@@ -37,6 +37,7 @@ class RevistaEdicion extends Model
         ];
     }
 
+    /** @return HasMany<RevistaArticulo, $this> */
     public function articulos(): HasMany
     {
         return $this->hasMany(RevistaArticulo::class, 'revista_edicion_id');

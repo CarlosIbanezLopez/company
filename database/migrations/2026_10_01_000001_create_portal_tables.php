@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bitacora', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->index()->constrained('users')->nullOnDelete();
             $table->string('accion', 30);
             $table->string('modulo', 60);
             $table->string('descripcion', 500);
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('ruta', 120)->nullable();
             $table->string('icono', 40)->nullable();
             $table->string('permiso', 80)->nullable();
-            $table->foreignId('padre_id')->nullable()->constrained('menu_items')->nullOnDelete();
+            $table->foreignId('padre_id')->nullable()->index()->constrained('menu_items')->nullOnDelete();
             $table->unsignedInteger('orden')->default(0);
             $table->boolean('activo')->default(true);
             $table->timestamps();

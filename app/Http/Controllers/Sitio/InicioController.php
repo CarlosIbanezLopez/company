@@ -9,9 +9,9 @@ use App\Models\Destacado;
 use App\Models\EnlacePlataforma;
 use App\Models\Evento;
 use App\Models\Noticia;
+use App\Support\Catalogos;
 use App\Support\Markdown;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Http\JsonResponse;
 
 /**
  * Página de inicio: carrusel, mensaje de presentación, destacados, noticias,
@@ -19,12 +19,12 @@ use Inertia\Response;
  */
 class InicioController extends Controller
 {
-    public function index(): Response
+    public function index(): JsonResponse
     {
         $noticias = Noticia::query()->with('categoria')->where('estado', 'publicado')
-            ->orderByDesc('destacado')->orderByDesc('fecha_publicacion')->limit(5)->get();
+            ->orderByDesc('destacado')->orderByDesc('fecha_publicacion')->orderByDesc('id')->limit(5)->get();
 
-        return Inertia::render('sitio/Inicio', [
+        return response()->json([
             'banners' => Banner::query()->where('activo', true)->orderBy('orden')->get(),
             'presentacion' => [
                 'titulo' => Configuracion::valor('presentacion_titulo'),
@@ -34,8 +34,11 @@ class InicioController extends Controller
             ],
             'destacados' => Destacado::query()->where('activo', true)->orderBy('orden')->get(),
             'noticias' => $noticias,
-            'eventos' => Evento::query()->where('publicado', true)->whereDate('fecha', '>=', today())->orderBy('fecha')->limit(3)->get(),
+            'eventos' => Evento::query()->where('publicado', true)->whereDate('fecha', '>=', today())
+                ->orderBy('fecha')->orderBy('hora_inicio')->limit(3)->get(),
             'enlaces' => EnlacePlataforma::query()->where('activo', true)->orderBy('orden')->get(),
+            // Nombres legibles de los tipos de evento (clave => etiqueta).
+            'tipos' => Catalogos::TIPOS_EVENTO,
         ]);
     }
 }

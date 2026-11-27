@@ -9,8 +9,6 @@ use App\Models\InnovaPostulacion;
 use App\Models\InnovaProyecto;
 use App\Models\InnovaServicio;
 use App\Models\InnovaSolicitud;
-use App\Models\Rol;
-use App\Models\User;
 use App\Support\Catalogos;
 use Illuminate\Database\Seeder;
 
@@ -70,21 +68,8 @@ class VinculacionSeeder extends Seeder
         $situaciones = array_keys(Catalogos::SITUACIONES_LABORALES);
         $modalidades = array_keys(Catalogos::MODALIDADES_TITULACION);
 
-        // Graduado con cuenta para probar la actualización de datos desde el sitio.
-        $usuario = User::query()->updateOrCreate(['email' => 'graduado@carrera.test'], [
-            'name' => 'Graduado de Prueba',
-            'password' => 'password',
-            'rol_id' => Rol::query()->where('nombre', 'Graduado')->value('id'),
-            'activo' => true,
-            'email_verified_at' => now(),
-        ]);
-
-        Graduado::query()->create([
-            'user_id' => $usuario->id, 'nombre' => 'Graduado de Prueba', 'ci' => '1234567', 'registro' => '210000001', 'anio_graduacion' => 2023,
-            'modalidad_titulacion' => 'proyecto_grado', 'situacion_laboral' => 'dependiente', 'empresa' => 'Empresa de ejemplo', 'cargo' => 'Analista administrativo',
-            'ciudad' => 'Santa Cruz de la Sierra', 'correo' => 'graduado@carrera.test', 'telefono' => '70000001',
-        ]);
-
+        // La cuenta graduado@carrera.test (rol Graduado) y su ficha se crean en SeguridadSeeder.
+        // Aquí se registran graduados sin cuenta de usuario.
         for ($i = 0; $i < 24; $i++) {
             $situacion = $faker->randomElement($situaciones);
             Graduado::query()->create([

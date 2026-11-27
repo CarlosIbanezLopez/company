@@ -1,0 +1,22 @@
+# Publicación en el servidor de la materia:
+#   https://www.tecnoweb.org.bo/inf513/grupo23sa/proyecto2   (sin "/public" en la URL)
+# Toda solicitud se dirige a la carpeta public/ (SPA React compilada, API /api y /storage).
+# Así ningún archivo de la raíz del proyecto (.env, vendor, storage, código fuente) queda expuesto.
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Conserva la cabecera Authorization (tokens Bearer de la API) en servidores con CGI/FastCGI.
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    RewriteRule ^public(/.*)?$ - [L]
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    Require all denied
+</IfModule>

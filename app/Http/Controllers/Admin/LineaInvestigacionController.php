@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU4 - Líneas de investigación de la Carrera (RF-07).
+ *
+ * @extends CrudController<LineaInvestigacion>
  */
 class LineaInvestigacionController extends CrudController
 {
@@ -19,7 +21,9 @@ class LineaInvestigacionController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.lineas';
+    protected string $recurso = 'investigacion';
+
+    protected string $uri = 'lineas';
 
     protected array $buscarEn = ['nombre', 'descripcion'];
 
@@ -27,6 +31,7 @@ class LineaInvestigacionController extends CrudController
 
     protected string $direccion = 'asc';
 
+    /** @return Builder<LineaInvestigacion> */
     protected function consulta(): Builder
     {
         return LineaInvestigacion::query()->withCount('proyectos');

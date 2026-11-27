@@ -56,7 +56,7 @@ return new class extends Migration
 
         Schema::create('materia_prerequisito', function (Blueprint $table) {
             $table->foreignId('materia_id')->constrained('materias')->cascadeOnDelete();
-            $table->foreignId('prerequisito_id')->constrained('materias')->cascadeOnDelete();
+            $table->foreignId('prerequisito_id')->index()->constrained('materias')->cascadeOnDelete();
             $table->primary(['materia_id', 'prerequisito_id']);
         });
 

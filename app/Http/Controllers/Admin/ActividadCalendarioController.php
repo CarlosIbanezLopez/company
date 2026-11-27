@@ -9,6 +9,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU3 - Calendario académico (RF-05).
+ *
+ * @extends CrudController<ActividadCalendario>
  */
 class ActividadCalendarioController extends CrudController
 {
@@ -20,7 +22,9 @@ class ActividadCalendarioController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.calendario';
+    protected string $recurso = 'academico';
+
+    protected string $uri = 'calendario';
 
     protected array $buscarEn = ['titulo', 'descripcion'];
 

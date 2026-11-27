@@ -25,7 +25,7 @@ class Documento extends Model
         'publicado',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['archivo'];
 
     protected function casts(): array
@@ -37,6 +37,7 @@ class Documento extends Model
         ];
     }
 
+    /** @return BelongsTo<CategoriaDocumento, $this> */
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(CategoriaDocumento::class, 'categoria_documento_id');

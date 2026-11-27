@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU2 - Banners y carrusel de imágenes de la página de inicio (RF-01).
+ *
+ * @extends CrudController<Banner>
  */
 class BannerController extends CrudController
 {
@@ -16,7 +18,9 @@ class BannerController extends CrudController
 
     protected string $singular = 'banner';
 
-    protected string $ruta = 'admin.banners';
+    protected string $recurso = 'portal';
+
+    protected string $uri = 'banners';
 
     protected ?string $descripcion = 'Imágenes y mensajes del carrusel principal del inicio.';
 

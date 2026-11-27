@@ -28,6 +28,7 @@ class InnovaServicio extends Model
         ];
     }
 
+    /** @return HasMany<InnovaSolicitud, $this> */
     public function solicitudes(): HasMany
     {
         return $this->hasMany(InnovaSolicitud::class, 'innova_servicio_id');

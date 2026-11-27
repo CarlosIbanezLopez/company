@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU7 - Categorías de consulta del formulario de contacto (RF-15).
+ *
+ * @extends CrudController<CategoriaConsulta>
  */
 class CategoriaConsultaController extends CrudController
 {
@@ -19,7 +21,9 @@ class CategoriaConsultaController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.categorias-consulta';
+    protected string $recurso = 'consultas';
+
+    protected string $uri = 'categorias-consulta';
 
     protected array $buscarEn = ['nombre'];
 
@@ -27,6 +31,7 @@ class CategoriaConsultaController extends CrudController
 
     protected string $direccion = 'asc';
 
+    /** @return Builder<CategoriaConsulta> */
     protected function consulta(): Builder
     {
         return CategoriaConsulta::query()->withCount('consultas');

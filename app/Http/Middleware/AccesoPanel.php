@@ -3,13 +3,13 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Solo permite entrar al panel a cuentas habilitadas cuyo rol tiene acceso.
- * Los graduados son enviados a su ficha personal.
+ * Solo deja pasar al panel de administración a cuentas habilitadas cuyo rol tiene acceso.
+ * Si la cuenta fue deshabilitada, además revoca el token con el que se hizo la solicitud.
  */
 class AccesoPanel
 {
@@ -17,14 +17,18 @@ class AccesoPanel
     {
         $usuario = $request->user();
 
-        if (! $usuario?->activo) {
-            Auth::guard('web')->logout();
+        if (! $usuario) {
+            throw new AuthenticationException;
+        }
 
-            return redirect()->route('login')->withErrors(['email' => 'Su cuenta está deshabilitada.']);
+        if (! $usuario->activo) {
+            $usuario->revocarTokenActual();
+
+            return response()->json(['message' => 'Su cuenta está deshabilitada.'], 403);
         }
 
         if (! $usuario->accesoPanel()) {
-            return redirect()->route('graduados.ficha');
+            return response()->json(['message' => 'Su rol no tiene acceso al panel de administración.'], 403);
         }
 
         return $next($request);

@@ -35,11 +35,13 @@ class Materia extends Model
         ];
     }
 
+    /** @return BelongsToMany<Materia, $this> */
     public function prerequisitos(): BelongsToMany
     {
         return $this->belongsToMany(Materia::class, 'materia_prerequisito', 'materia_id', 'prerequisito_id');
     }
 
+    /** @return BelongsToMany<Materia, $this> */
     public function posteriores(): BelongsToMany
     {
         return $this->belongsToMany(Materia::class, 'materia_prerequisito', 'prerequisito_id', 'materia_id');

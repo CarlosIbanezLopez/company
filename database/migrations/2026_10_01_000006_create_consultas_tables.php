@@ -20,7 +20,7 @@ return new class extends Migration
 
         Schema::create('consultas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('categoria_consulta_id')->nullable()->constrained('categorias_consulta')->nullOnDelete();
+            $table->foreignId('categoria_consulta_id')->nullable()->index()->constrained('categorias_consulta')->nullOnDelete();
             $table->string('nombre', 150);
             $table->string('correo', 150);
             $table->string('telefono', 30)->nullable();

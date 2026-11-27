@@ -12,6 +12,8 @@ use Illuminate\Validation\Rule;
 /**
  * CU6 - Actividades y eventos académicos (RF-13). Los próximos se muestran
  * automáticamente y los finalizados pasan al historial según la fecha.
+ *
+ * @extends CrudController<Evento>
  */
 class EventoController extends CrudController
 {
@@ -21,7 +23,9 @@ class EventoController extends CrudController
 
     protected string $singular = 'evento';
 
-    protected string $ruta = 'admin.eventos';
+    protected string $recurso = 'eventos';
+
+    protected string $uri = 'eventos';
 
     protected array $buscarEn = ['titulo', 'lugar'];
 
@@ -72,6 +76,7 @@ class EventoController extends CrudController
         ];
     }
 
+    /** @param  Builder<Evento>  $consulta */
     protected function aplicarFiltros(Builder $consulta, Request $request): void
     {
         if ($tipo = $request->query('tipo')) {

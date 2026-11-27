@@ -25,6 +25,7 @@ class Consulta extends Model
         'ip',
     ];
 
+    /** @return BelongsTo<CategoriaConsulta, $this> */
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(CategoriaConsulta::class, 'categoria_consulta_id');

@@ -30,23 +30,28 @@ class Bitacora extends Model
     protected function casts(): array
     {
         return [
-            'created_at' => 'datetime:Y-m-d H:i:s',
+            'created_at' => 'datetime',
         ];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function usuario(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
-     * Guarda una acción en la bitácora. Solo registra acciones de usuarios autenticados.
+     * Guarda una acción en la bitácora.
+     *
+     * Por defecto solo registra acciones de usuarios autenticados: el indicado en $userId o,
+     * si no se indica, el autenticado (guard por defecto o token Sanctum de la API).
+     * Con $anonimo = true también registra acciones sin usuario (user_id NULL).
      */
-    public static function registrar(string $accion, string $modulo, string $descripcion, ?int $registroId = null, ?int $userId = null): void
+    public static function registrar(string $accion, string $modulo, string $descripcion, ?int $registroId = null, ?int $userId = null, bool $anonimo = false): void
     {
-        $userId ??= Auth::id();
+        $userId ??= Auth::id() ?? Auth::guard('sanctum')->id();
 
-        if (! $userId) {
+        if (! $userId && ! $anonimo) {
             return;
         }
 

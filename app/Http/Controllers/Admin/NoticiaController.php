@@ -11,6 +11,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU6 - Noticias y comunicados: crear, editar, archivar, eliminar y destacar en el inicio (RF-12).
+ *
+ * @extends CrudController<Noticia>
  */
 class NoticiaController extends CrudController
 {
@@ -22,11 +24,13 @@ class NoticiaController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.noticias';
+    protected string $recurso = 'noticias';
+
+    protected string $uri = 'noticias';
 
     protected array $buscarEn = ['titulo', 'resumen'];
 
-    protected array $con = ['categoria', 'autor'];
+    protected array $con = ['categoria', 'autor:id,name'];
 
     protected string $ordenarPor = 'fecha_publicacion';
 

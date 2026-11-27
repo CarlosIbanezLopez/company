@@ -28,7 +28,7 @@ class Noticia extends Model
         'destacado',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['imagen'];
 
     protected function casts(): array
@@ -39,11 +39,13 @@ class Noticia extends Model
         ];
     }
 
+    /** @return BelongsTo<CategoriaNoticia, $this> */
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(CategoriaNoticia::class, 'categoria_noticia_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function autor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

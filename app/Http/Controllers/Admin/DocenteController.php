@@ -9,6 +9,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU3 - Plantel docente y autoridades (RF-03), con control de la información publicable.
+ *
+ * @extends CrudController<Docente>
  */
 class DocenteController extends CrudController
 {
@@ -18,7 +20,9 @@ class DocenteController extends CrudController
 
     protected string $singular = 'docente';
 
-    protected string $ruta = 'admin.docentes';
+    protected string $recurso = 'docentes';
+
+    protected string $uri = 'docentes';
 
     protected ?string $descripcion = 'Datos del plantel. Puede ocultar el correo o la formación si no está autorizada su publicación.';
 

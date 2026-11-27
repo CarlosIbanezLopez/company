@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU6 - Categorías de noticias y comunicados (RF-12).
+ *
+ * @extends CrudController<CategoriaNoticia>
  */
 class CategoriaNoticiaController extends CrudController
 {
@@ -19,7 +21,9 @@ class CategoriaNoticiaController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.categorias-noticia';
+    protected string $recurso = 'noticias';
+
+    protected string $uri = 'categorias-noticia';
 
     protected array $buscarEn = ['nombre'];
 
@@ -29,6 +33,7 @@ class CategoriaNoticiaController extends CrudController
 
     protected ?string $slugDesde = 'nombre';
 
+    /** @return Builder<CategoriaNoticia> */
     protected function consulta(): Builder
     {
         return CategoriaNoticia::query()->withCount('noticias');

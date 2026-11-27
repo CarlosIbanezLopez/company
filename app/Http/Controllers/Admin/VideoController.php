@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU6 - Vínculos a videos de acontecimientos, proyectos o actividades (RF-14).
+ *
+ * @extends CrudController<Video>
  */
 class VideoController extends CrudController
 {
@@ -17,7 +19,9 @@ class VideoController extends CrudController
 
     protected string $singular = 'video';
 
-    protected string $ruta = 'admin.videos';
+    protected string $recurso = 'galeria';
+
+    protected string $uri = 'videos';
 
     protected array $buscarEn = ['titulo'];
 

@@ -20,8 +20,8 @@ return new class extends Migration
 
         Schema::create('noticias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('categoria_noticia_id')->nullable()->constrained('categorias_noticia')->nullOnDelete();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('categoria_noticia_id')->nullable()->index()->constrained('categorias_noticia')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->index()->constrained('users')->nullOnDelete();
             $table->string('titulo', 200);
             $table->string('slug', 220)->unique();
             $table->string('resumen', 300)->nullable();
@@ -62,7 +62,7 @@ return new class extends Migration
 
         Schema::create('fotos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('album_id')->constrained('albumes')->cascadeOnDelete();
+            $table->foreignId('album_id')->index()->constrained('albumes')->cascadeOnDelete();
             $table->string('imagen');
             $table->string('descripcion', 255)->nullable();
             $table->unsignedInteger('orden')->default(0);
@@ -71,7 +71,7 @@ return new class extends Migration
 
         Schema::create('videos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('album_id')->nullable()->constrained('albumes')->nullOnDelete();
+            $table->foreignId('album_id')->nullable()->index()->constrained('albumes')->nullOnDelete();
             $table->string('titulo', 200);
             $table->string('url', 255);
             $table->string('descripcion', 500)->nullable();

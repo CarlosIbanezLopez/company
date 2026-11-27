@@ -1,7 +1,11 @@
 <?php
 
+/*
+| Mensajes de autenticación.
+*/
+
 return [
-    'failed' => 'Estas credenciales no coinciden con nuestros registros.',
+    'failed' => 'Las credenciales no coinciden con nuestros registros.',
     'password' => 'La contraseña es incorrecta.',
-    'throttle' => 'Demasiados intentos. Intente de nuevo en :seconds segundos.',
+    'throttle' => 'Demasiados intentos de inicio de sesión. Intente de nuevo en :seconds segundos.',
 ];

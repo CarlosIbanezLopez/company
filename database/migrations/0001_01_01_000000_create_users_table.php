@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * CU1 - Gestión de Usuarios: roles, permisos y cuentas de usuario.
+ *
+ * En todas las migraciones las claves foráneas llevan índice explícito (->index()):
+ * PostgreSQL, a diferencia de MySQL/InnoDB, no lo crea automáticamente. Se omite cuando
+ * la columna ya encabeza la clave primaria o tiene un índice único.
  */
 return new class extends Migration
 {
@@ -29,7 +33,7 @@ return new class extends Migration
 
         Schema::create('rol_permiso', function (Blueprint $table) {
             $table->foreignId('rol_id')->constrained('roles')->cascadeOnDelete();
-            $table->foreignId('permiso_id')->constrained('permisos')->cascadeOnDelete();
+            $table->foreignId('permiso_id')->index()->constrained('permisos')->cascadeOnDelete();
             $table->primary(['rol_id', 'permiso_id']);
         });
 
@@ -38,7 +42,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('telefono', 20)->nullable();
-            $table->foreignId('rol_id')->nullable()->constrained('roles')->nullOnDelete();
+            $table->foreignId('rol_id')->nullable()->index()->constrained('roles')->nullOnDelete();
             $table->boolean('activo')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

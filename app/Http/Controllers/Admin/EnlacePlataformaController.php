@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * CU2 - Enlaces directos a las plataformas de la Universidad (RF-01).
+ *
+ * @extends CrudController<EnlacePlataforma>
  */
 class EnlacePlataformaController extends CrudController
 {
@@ -16,7 +18,9 @@ class EnlacePlataformaController extends CrudController
 
     protected string $singular = 'enlace';
 
-    protected string $ruta = 'admin.enlaces';
+    protected string $recurso = 'portal';
+
+    protected string $uri = 'enlaces';
 
     protected ?string $descripcion = 'Accesos directos a sistemas de la Universidad.';
 

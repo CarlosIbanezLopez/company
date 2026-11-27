@@ -10,6 +10,8 @@ use Illuminate\Validation\Rule;
 /**
  * CU3 - Contenido institucional y académico editable (RF-02, RF-05):
  * historia, misión, visión, perfiles, admisión, titulación, normas de la revista, etc.
+ *
+ * @extends CrudController<Pagina>
  */
 class PaginaController extends CrudController
 {
@@ -21,7 +23,9 @@ class PaginaController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.paginas';
+    protected string $recurso = 'academico';
+
+    protected string $uri = 'paginas';
 
     protected ?string $descripcion = 'Información institucional y académica publicada en el sitio.';
 

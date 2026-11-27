@@ -1,6 +1,10 @@
 <?php
 
+/*
+| Etiquetas de los enlaces del paginador ("links" en las respuestas JSON paginadas).
+*/
+
 return [
-    'previous' => '&laquo; Anterior',
-    'next' => 'Siguiente &raquo;',
+    'previous' => '« Anterior',
+    'next' => 'Siguiente »',
 ];

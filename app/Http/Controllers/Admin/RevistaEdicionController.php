@@ -9,6 +9,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * CU4 - Ediciones de la Revista Académica INNOVAR (RF-08).
+ *
+ * @extends CrudController<RevistaEdicion>
  */
 class RevistaEdicionController extends CrudController
 {
@@ -20,7 +22,9 @@ class RevistaEdicionController extends CrudController
 
     protected bool $femenino = true;
 
-    protected string $ruta = 'admin.ediciones';
+    protected string $recurso = 'revista';
+
+    protected string $uri = 'ediciones';
 
     protected array $buscarEn = ['titulo'];
 
@@ -28,6 +32,7 @@ class RevistaEdicionController extends CrudController
 
     protected string $carpeta = 'revista';
 
+    /** @return Builder<RevistaEdicion> */
     protected function consulta(): Builder
     {
         return RevistaEdicion::query()->withCount('articulos');
@@ -35,7 +40,7 @@ class RevistaEdicionController extends CrudController
 
     protected function accionesFila(): array
     {
-        return [['etiqueta' => 'Artículos', 'icono' => 'file-text', 'url' => route('admin.articulos.index').'?revista_edicion_id=__ID__']];
+        return [['etiqueta' => 'Artículos', 'url' => '/admin/articulos?revista_edicion_id=__ID__', 'icono' => 'file-text', 'tipo' => 'enlace']];
     }
 
     protected function campos(): array

@@ -23,7 +23,7 @@ class InnovaProyecto extends Model
         'publicado',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['imagen'];
 
     protected function casts(): array

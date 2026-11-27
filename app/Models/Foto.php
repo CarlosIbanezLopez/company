@@ -22,9 +22,10 @@ class Foto extends Model
         'orden',
     ];
 
-    /** Campos que guardan rutas de archivos en el disco público. */
+    /** @var array<int, string> Campos que guardan rutas de archivos en el disco público. */
     protected array $archivos = ['imagen'];
 
+    /** @return BelongsTo<Album, $this> */
     public function album(): BelongsTo
     {
         return $this->belongsTo(Album::class, 'album_id');
